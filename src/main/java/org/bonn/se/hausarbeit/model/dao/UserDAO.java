@@ -2,24 +2,20 @@ package org.bonn.se.hausarbeit.model.dao;
 
 import org.bonn.se.hausarbeit.control.LoginControl;
 import org.bonn.se.hausarbeit.control.exceptions.DatabaseException;
-import org.bonn.se.hausarbeit.model.dto.Role;
 import org.bonn.se.hausarbeit.model.dto.User;
 import org.bonn.se.hausarbeit.services.db.JDBCConnection;
 
-import javax.management.Notification;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class UserDAO extends AbstractDAO {
-    public void create(User user) throws DatabaseException, SQLException {
-        ResultSet set = null;
 
+    public void create(User user) throws DatabaseException, SQLException {
         try {
-            //DB-Zugriff
             Statement statement = JDBCConnection.getInstance().getStatement();
 
-            set = statement.executeQuery("INSERT INTO \"carlookdb\".user (email, password, firstname, lastname, role) " +
+            statement.executeQuery("INSERT INTO \"carlookdb\".user (email, password, firstname, lastname, role) " +
                     "VALUES ('" + user.getEmail() + "', '" + user.getPassword() + "', '" + user.getFirstname() + "', '" + user.getLastname() + "', '" + user.getRole() + "') " +
                     "RETURNING *");
         } catch (SQLException ex) {
@@ -27,9 +23,9 @@ public class UserDAO extends AbstractDAO {
             throw new DatabaseException("Fehler im SQL-Befehl! Bitte den Programmierer benachrichtigen!");
         }
     }
+
     public boolean doesEmailExist(String mail) throws DatabaseException, SQLException {
         ResultSet set = null;
-        boolean erg = false;
 
         try {
             Statement statement = JDBCConnection.getInstance().getStatement();
@@ -43,8 +39,7 @@ public class UserDAO extends AbstractDAO {
         }
         try {
             while (set.next()) {
-                String test = null;
-                test = set.getString(2);
+                String test = set.getString(2);
                 if (test.equals(mail)) {
                     return true;
                 }
@@ -52,6 +47,6 @@ public class UserDAO extends AbstractDAO {
         } catch (SQLException ex) {
             Logger.getLogger(LoginControl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return erg;
+        return false;
     }
 }

@@ -27,10 +27,6 @@ public class LoginView extends VerticalLayout implements View {
     }
 
     public void setUp() {
-
-
-
-
         ThemeResource themeResource = new ThemeResource("images/Logo.png");
         Image logo = new Image(null, themeResource);
         logo.setWidth("250px");
@@ -47,11 +43,6 @@ public class LoginView extends VerticalLayout implements View {
         this.setComponentAlignment(labelText, Alignment.TOP_CENTER);
         this.addComponents(platzhalterLabel);
         platzhalterLabel.setHeight("60px");
-
-
-
-
-        //this.setSizeFull();
 
         final TextField userLogin = new TextField();
         userLogin.setCaption("E-Mail Adresse:");
@@ -76,10 +67,6 @@ public class LoginView extends VerticalLayout implements View {
         Button buttonReg = new Button("Registrieren", VaadinIcons.ARROW_CIRCLE_RIGHT_O);
         HorizontalLayout newh = new HorizontalLayout();
         newh.addComponents(buttonReg,buttonLogin);
-        //layout.addComponents(buttonReg,buttonLogin);
-        //layout.setComponentAlignment(buttonLogin, Alignment.MIDDLE_LEFT);
-        //layout.setComponentAlignment(buttonReg, Alignment.MIDDLE_RIGHT);
-        //layout.setWidth("750px");
         layout.addComponent(newh);
         panel.setSizeUndefined();
 
@@ -88,11 +75,7 @@ public class LoginView extends VerticalLayout implements View {
            String password = passwordField.getValue();
             try {
                 LoginControl.checkAuthentication(login,password);
-            } catch (NoSuchUserOrPassword noSuchUserOrPassword) {
-                Notification.show("Fehler","E-Mail oder Passwort falsch", Notification.Type.ERROR_MESSAGE);
-                userLogin.setValue("");
-                passwordField.setValue("");
-            } catch (DatabaseException databaseException) {
+            } catch (NoSuchUserOrPassword | DatabaseException ex) {
                 Notification.show("Fehler","E-Mail oder Passwort falsch", Notification.Type.ERROR_MESSAGE);
                 userLogin.setValue("");
                 passwordField.setValue("");

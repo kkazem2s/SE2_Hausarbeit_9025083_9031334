@@ -1,18 +1,16 @@
 package org.bonn.se.hausarbeit.gui.components;
 
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.*;
 import org.bonn.se.hausarbeit.control.LoginControl;
 import org.bonn.se.hausarbeit.control.exceptions.DatabaseException;
-import org.bonn.se.hausarbeit.gui.ui.MyUI;
 import org.bonn.se.hausarbeit.gui.windows.CreatedOffersWindow;
 import org.bonn.se.hausarbeit.gui.windows.NewOfferWindow;
 import org.bonn.se.hausarbeit.gui.windows.ShowBookingWindow;
+import org.bonn.se.hausarbeit.model.dao.AutoDAO;
 import org.bonn.se.hausarbeit.model.dto.User;
-import org.bonn.se.hausarbeit.services.util.Views;
 
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -22,22 +20,6 @@ public class TopPanel extends HorizontalLayout {
 
     User user = null;
 
-    public void enter(ViewChangeListener.ViewChangeEvent event) {
-        User user = ((MyUI) UI.getCurrent()).getUser();
-
-        if (user != null) {
-            UI.getCurrent().getNavigator().navigateTo(Views.MAIN);
-        } else {
-            if (user.getRole().equals("customer")) {
-                setUpCustomer();
-            } else {
-                //setUpSeller();
-            }
-        }
-    }
-    public void setUpCustomer() {
-
-    }
     public TopPanel(User user) {
         this.user = user;
         this.setSizeFull();
@@ -46,12 +28,12 @@ public class TopPanel extends HorizontalLayout {
         Image logo = new Image(null, themeResource);
         logo.setWidth("100px");
 
-        Label headlabel = new Label("CarLook Ltd. - <i> Autohaus war gestern </i>", ContentMode.HTML);
-        headlabel.setSizeUndefined();
+        Label headLabel = new Label("CarLook Ltd. - <i> Autohaus war gestern </i>", ContentMode.HTML);
+        headLabel.setSizeUndefined();
 
         this.addComponent(logo);
-        this.addComponent(headlabel);
-        this.setComponentAlignment(headlabel, Alignment.MIDDLE_LEFT);
+        this.addComponent(headLabel);
+        this.setComponentAlignment(headLabel, Alignment.MIDDLE_LEFT);
 
         Button customer = new Button("Reservierte Autos" , VaadinIcons.CAR);
         Button seller = new Button("Erstellte Anzeigen" , VaadinIcons.NEWSPAPER);
@@ -59,14 +41,22 @@ public class TopPanel extends HorizontalLayout {
 
         customer.addClickListener(e -> {
             try {
-                UI.getCurrent().addWindow(new ShowBookingWindow());
+                if (AutoDAO.getInstance().getBookedCars() == null) {
+                    Notification.show("Sie haben bisher keine Autos reserviert!" , Notification.Type.WARNING_MESSAGE);
+                } else {
+                    UI.getCurrent().addWindow(new ShowBookingWindow());
+                }
             } catch (DatabaseException | SQLException ex) {
                 Logger.getLogger(LoginControl.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         });
         seller.addClickListener(e -> {
-           UI.getCurrent().addWindow(new CreatedOffersWindow());
+            if (AutoDAO.getInstance().createdCars() == null) {
+                Notification.show("Bisher haben Sie keine Anzeigen erstellt!", Notification.Type.WARNING_MESSAGE);
+            } else {
+                UI.getCurrent().addWindow(new CreatedOffersWindow());
+            }
         });
         seller2.addClickListener(e -> {
             UI.getCurrent().addWindow(new NewOfferWindow());
@@ -82,7 +72,7 @@ public class TopPanel extends HorizontalLayout {
                 this.setComponentAlignment(seller , Alignment.MIDDLE_RIGHT);
                 this.setComponentAlignment(seller2 , Alignment.MIDDLE_RIGHT);
             } else {
-                System.out.println(user.getRole().toString());
+                System.out.println(user.getRole());
             }
         }
 
@@ -92,6 +82,5 @@ public class TopPanel extends HorizontalLayout {
         });
         this.addComponent(buttonLogOut);
         this.setComponentAlignment(buttonLogOut, Alignment.MIDDLE_RIGHT);
-        //this.setSizeFull();
     }
 }
