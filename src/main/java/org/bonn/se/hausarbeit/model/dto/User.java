@@ -1,10 +1,6 @@
 package org.bonn.se.hausarbeit.model.dto;
 
-import org.bonn.se.hausarbeit.model.dao.RoleDAO;
-import org.bonn.se.hausarbeit.services.util.Roles;
-
 import java.io.Serializable;
-import java.util.List;
 
 public class User implements Serializable {
 
@@ -15,15 +11,6 @@ public class User implements Serializable {
     private String lastname;
     private String role;
 
-
-    public User(int userID, String email, String password, String firstname, String lastname, String role) {
-        this.userID = userID;
-        this.email = email;
-        this.password = password;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.role = role;
-    }
     public User(String email, String password, String firstname, String lastname, String role) {
         this.email = email;
         this.password = password;

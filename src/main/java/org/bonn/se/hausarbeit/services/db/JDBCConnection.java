@@ -3,7 +3,6 @@ package org.bonn.se.hausarbeit.services.db;
 import org.bonn.se.hausarbeit.control.exceptions.DatabaseException;
 import org.bonn.se.hausarbeit.services.util.LoginData;
 
-import javax.xml.crypto.Data;
 import java.sql.*;
 import java.util.*;
 import java.util.logging.Level;
@@ -12,13 +11,8 @@ import java.util.logging.Logger;
 public class JDBCConnection {
 
     private static JDBCConnection connection = null;
-
     private String url = "jdbc:postgresql://dumbo.inf.h-brs.de:5432/mschub2s";
-
     private Connection conn;
-
-    private String login = LoginData.USERNAME;
-    private String password = LoginData.PASSWORD;
 
     public static JDBCConnection getInstance() throws DatabaseException {
         if (connection == null) {
@@ -44,8 +38,8 @@ public class JDBCConnection {
         try {
             Properties props = new Properties();
 
-            props.setProperty("user", login);
-            props.setProperty("password", password);
+            props.setProperty("user", LoginData.USERNAME);
+            props.setProperty("password", LoginData.PASSWORD);
 
             this.conn = DriverManager.getConnection(this.url, props);
         } catch (SQLException ex) {
@@ -85,5 +79,4 @@ public class JDBCConnection {
             Logger.getLogger(JDBCConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
 }

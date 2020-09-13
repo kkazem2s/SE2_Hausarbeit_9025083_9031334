@@ -38,6 +38,7 @@ public class MainView extends VerticalLayout implements View {
     void setUp() {
         TopPanel panel = new TopPanel(((MyUI) UI.getCurrent()).getUser());
         this.addComponent(panel);
+        this.setComponentAlignment(panel, Alignment.MIDDLE_CENTER);
         panel.setSizeUndefined();
 
         final HorizontalLayout horizontalLayout = new HorizontalLayout();
@@ -51,13 +52,7 @@ public class MainView extends VerticalLayout implements View {
         horizontalLayout.setComponentAlignment(labelText, Alignment.MIDDLE_CENTER);
         horizontalLayout.addComponent(textField);
         horizontalLayout.addComponent(buttonSuche);
-        /*
-        Button buttonLogOut = new Button("Logout",VaadinIcons.LEVEL_DOWN_BOLD);
-        buttonLogOut.addClickListener(e -> {
-            LoginControl.logoutUser();
-        });
-        horizontalLayout.addComponent(buttonLogOut);
-*/
+
         addComponent(horizontalLayout);
         setComponentAlignment(horizontalLayout, Alignment.TOP_CENTER);
 
@@ -70,6 +65,7 @@ public class MainView extends VerticalLayout implements View {
         grid.addSelectionListener(event -> {
             this.selected = selection.getValue();
         });
+
         /*
         buttonSuche.addClickListener(event -> {
             String marke = textField.getValue();
@@ -99,7 +95,6 @@ public class MainView extends VerticalLayout implements View {
             if (!textField.getValue().equals("")) {
                 String marke = textField.getValue();
                 List<Car> list = AutoDAO.getInstance().getAuto(marke);
-                //List<Auto> list = AutoSearch.getInstance().getAutoByMarke(marke);
 
                 if (marke.equals("")) {
                     Notification.show(null, "Bitte Automarke eingeben!", Notification.Type.WARNING_MESSAGE);
@@ -111,35 +106,33 @@ public class MainView extends VerticalLayout implements View {
 
                 grid.setItems(list);
 
-                //grid.addColumn(Car::getCarID).setCaption("CarID");
                 grid.addColumn(Car::getBrand).setCaption("Marke");
                 grid.addColumn(Car::getModel).setCaption("Modell");
                 grid.addColumn(Car::getYear).setCaption("Baujahr");
                 grid.addColumn(Car::getDescription).setCaption("Beschreibung");
+
+                if (((MyUI) UI.getCurrent()).getUser().getRole().equals("customer")) {
+                    addComponent(buttonBuche);
+                    setComponentAlignment(buttonBuche, Alignment.MIDDLE_CENTER);
+                }
+
             } else {
                 return;
             }
         });
 
-
-
         buttonBuche.addClickListener(event -> {
-            Notification.show(null, "Gebuchtes Auto: " + this.selected.getBrand() + " " + this.selected.getModel() , Notification.Type.WARNING_MESSAGE);
+            Notification.show("Gebuchtes Auto: " + this.selected.getBrand() + " " + this.selected.getModel() , Notification.Type.WARNING_MESSAGE);
             try  {
                 AutoDAO.getInstance().bookCar(((MyUI) UI.getCurrent()).getUser() , this.selected);
             } catch (SQLException | DatabaseException ex) {
+                ex.printStackTrace();
                 Logger.getLogger(LoginControl.class.getName()).log(Level.SEVERE, null, ex);
                 //throw new DatabaseException("Fehler im SQL-Befehl! Bitte den Programmierer benachrichtigen!");
             }
         });
 
         addComponent(grid);
-        if (((MyUI) UI.getCurrent()).getUser().getRole().equals("customer")) {
-            addComponent(buttonBuche);
-            setComponentAlignment(buttonBuche, Alignment.MIDDLE_CENTER);
-        }
-
-        //setContent(this);
     }
 
 }

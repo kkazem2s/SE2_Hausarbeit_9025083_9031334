@@ -1,5 +1,6 @@
 package org.bonn.se.hausarbeit.model.dao;
 
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import org.bonn.se.hausarbeit.control.LoginControl;
 import org.bonn.se.hausarbeit.control.exceptions.DatabaseException;
@@ -7,7 +8,6 @@ import org.bonn.se.hausarbeit.gui.ui.MyUI;
 import org.bonn.se.hausarbeit.model.dto.Car;
 import org.bonn.se.hausarbeit.model.dto.User;
 import org.bonn.se.hausarbeit.services.db.JDBCConnection;
-import org.postgresql.util.PSQLException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,11 +18,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class AutoDAO extends AbstractDAO {
+
     public static AutoDAO dao = null;
 
-    private AutoDAO() {
-
-    }
+    private AutoDAO() {}
 
     public static AutoDAO getInstance() {
         if (dao == null) {
@@ -30,9 +29,9 @@ public class AutoDAO extends AbstractDAO {
         }
         return dao;
     }
+
     public List<Car> getAuto(String str) {
         Statement statement = this.getStatement();
-
         ResultSet rs = null;
 
         try {
@@ -41,10 +40,10 @@ public class AutoDAO extends AbstractDAO {
         } catch (SQLException ex) {
             Logger.getLogger(AutoDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         if (rs == null) {
             return null;
         }
+
         List<Car> liste = new ArrayList<Car>();
         Car car = null;
 
@@ -61,13 +60,13 @@ public class AutoDAO extends AbstractDAO {
                     car.setYear(rs.getInt(6));
                     liste.add(car);
                 }
-
             }
         } catch (SQLException ex) {
             Logger.getLogger(AutoDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return liste;
     }
+
     public void insertCar(User user, Car car) throws DatabaseException, SQLException {
         ResultSet set = null;
 
@@ -86,9 +85,7 @@ public class AutoDAO extends AbstractDAO {
 
     public List<Car> createdCars() {
         Statement statement = this.getStatement();
-
         ResultSet rs = null;
-
         Integer id = ((MyUI) UI.getCurrent()).getUser().getUserID();
 
         try {
@@ -97,15 +94,14 @@ public class AutoDAO extends AbstractDAO {
         } catch (SQLException ex) {
             Logger.getLogger(AutoDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         if (rs == null) {
             return null;
         }
+
         List<Car> liste = new ArrayList<Car>();
         Car car = null;
 
         try {
-            //System.out.println(rs.getString(1));
             while(rs.next()) { //Marke, Modell, Baujahr, Beschreibung
                  car = new Car();
                  car.setCarID(rs.getInt(1));
@@ -119,47 +115,68 @@ public class AutoDAO extends AbstractDAO {
         } catch (SQLException ex) {
             Logger.getLogger(AutoDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+        if (liste.isEmpty()) {
+            return null;
+        }
         return liste;
     }
 
     public void deleteCarByID(int id) throws SQLException, DatabaseException {
-        System.out.println(id);
-        //Statement statement = JDBCConnection.getInstance().getStatement();
         try {
             deleteAllBooking(id);
-            JDBCConnection.getInstance().getStatement().executeQuery("DELETE FROM carlookdb.car WHERE carlookdb.car.carid = \'" + id + "\'");
+            JDBCConnection.getInstance().getStatement().executeUpdate("DELETE FROM carlookdb.car WHERE carlookdb.car.carid = \'" + id + "\'");
         } catch (SQLException ex) {
             Logger.getLogger(LoginControl.class.getName()).log(Level.SEVERE, null, ex);
             throw new DatabaseException("Fehler im SQL-Befehl! Bitte den Programmierer benachrichtigen!");
         }
     }
+
     public void deleteAllBooking(int id) throws SQLException, DatabaseException {
         try {
-            JDBCConnection.getInstance().getStatement().executeQuery("DELETE FROM carlookdb.reservation WHERE carlookdb.reservation.carid = \'" + id + "\'");
+            JDBCConnection.getInstance().getStatement().executeUpdate("DELETE FROM carlookdb.reservation WHERE carlookdb.reservation.carid = \'" + id + "\'");
         } catch (SQLException ex) {
-            JDBCConnection.getInstance().getStatement().executeQuery("DELETE FROM carlookdb.car WHERE carlookdb.car.carid = \'" + id + "\'");
             Logger.getLogger(LoginControl.class.getName()).log(Level.SEVERE, null, ex);
             throw new DatabaseException("Fehler im SQL-Befehl! Bitte den Programmierer benachrichtigen!");
         }
     }
+
     public void deleteBooking(int id) throws SQLException, DatabaseException {
         try {
-            JDBCConnection.getInstance().getStatement().executeQuery("DELETE FROM carlookdb.reservation WHERE carlookdb.reservation.carid = \'" + id + "\' AND  carlookdb.reservation.userid = \'" + ((MyUI) UI.getCurrent()).getUser().getUserID() + "\'");
+            JDBCConnection.getInstance().getStatement().executeUpdate("DELETE FROM carlookdb.reservation WHERE carlookdb.reservation.carid = \'" + id + "\' AND  carlookdb.reservation.userid = \'" + ((MyUI) UI.getCurrent()).getUser().getUserID() + "\'");
         } catch (SQLException ex) {
             Logger.getLogger(LoginControl.class.getName()).log(Level.SEVERE, null, ex);
             throw new DatabaseException("Fehler im SQL-Befehl! Bitte den Programmierer benachrichtigen!");
         }
     }
+
     public void bookCar(User u, Car c) throws SQLException, DatabaseException {
+        if (isAlreadyBooked(u,c)) {
+            Notification.show("Sie haben dieses Auto bereits reserviert!" , Notification.Type.WARNING_MESSAGE);
+        } else {
+            try {
+                JDBCConnection.getInstance().getStatement().executeQuery("INSERT INTO carlookdb.reservation (carid, userid) " +
+                        "VALUES ('" + c.getCarID() + "', '" + u.getUserID() + "') " +
+                        "RETURNING *");
+            } catch (SQLException | DatabaseException ex) {
+                Logger.getLogger(LoginControl.class.getName()).log(Level.SEVERE, null, ex);
+                throw new DatabaseException("Fehler im SQL-Befehl! Bitte den Programmierer benachrichtigen!");
+            }
+        }
+    }
+    public boolean isAlreadyBooked(User u, Car c) throws SQLException, DatabaseException {
+        ResultSet rs = null;
         try {
-            JDBCConnection.getInstance().getStatement().executeQuery("INSERT INTO carlookdb.reservation (carid, userid) " +
-                    "VALUES ('" + c.getCarID() + "', '" + u.getUserID() + "') " +
-                    "RETURNING *");
-        } catch (SQLException | DatabaseException ex) {
+            rs = JDBCConnection.getInstance().getStatement().executeQuery("SELECT * FROM carlookdb.reservation WHERE \'" + u.getUserID() + "\' = carlookdb.reservation.userid AND \'" + c.getCarID() + "\' = carlookdb.reservation.carid");
+        }  catch (SQLException | DatabaseException ex) {
             Logger.getLogger(LoginControl.class.getName()).log(Level.SEVERE, null, ex);
             throw new DatabaseException("Fehler im SQL-Befehl! Bitte den Programmierer benachrichtigen!");
         }
+        if (!rs.next()) {
+            return false;
+        }
+        return true;
     }
+
     public List<Car> getBookedCars() throws SQLException, DatabaseException{
         ResultSet rs = null;
 
@@ -173,7 +190,8 @@ public class AutoDAO extends AbstractDAO {
             Logger.getLogger(LoginControl.class.getName()).log(Level.SEVERE, null, ex);
             throw new DatabaseException("Fehler im SQL-Befehl! Bitte den Programmierer benachrichtigen!");
         }
-        while(rs.next()) { //Marke, Modell, Baujahr, Beschreibung
+
+        while(rs.next()) {
             car = new Car();
             car.setCarID(rs.getInt(1));
             car.setSellerID(rs.getInt(2));
@@ -182,6 +200,9 @@ public class AutoDAO extends AbstractDAO {
             car.setModel(rs.getString(5));
             car.setYear(rs.getInt(6));
             list.add(car);
+        }
+        if (list.isEmpty()) {
+            return null;
         }
         return list;
     }

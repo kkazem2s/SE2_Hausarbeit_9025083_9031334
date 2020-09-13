@@ -16,6 +16,7 @@ public class NewOfferWindow extends Window {
     public NewOfferWindow() {
         super("Neue Anzeige erstellen:");
         center();
+        setWidth("400px");
 
         VerticalLayout content = new VerticalLayout();
         content.setMargin(true);
@@ -23,14 +24,20 @@ public class NewOfferWindow extends Window {
 
         TextField brand = new TextField();
         brand.setCaption("Marke:");
+        brand.setSizeFull();
         TextField description = new TextField();
         description.setCaption("Beschreibung");
+        description.setSizeFull();
         TextField model = new TextField();
         model.setCaption("Modell:");
+        model.setSizeFull();
         TextField year = new TextField();
         year.setCaption("Baujahr");
+        year.setSizeFull();
 
         Button finish = new Button("Anzeige erstellen", VaadinIcons.ARROW_CIRCLE_UP_O);
+
+
 
         finish.addClickListener(e -> {
             if (year.getValue().matches("-?\\d+")) {
@@ -47,10 +54,8 @@ public class NewOfferWindow extends Window {
                 Notification.show("Bitte korrekte Zahl für ein Jahr eingeben!" , Notification.Type.ERROR_MESSAGE);
             }
         });
-
         content.addComponents(brand,description,model,year,finish);
-
-
+        content.setComponentAlignment(finish, Alignment.MIDDLE_CENTER);
     }
 
     private void finish() {

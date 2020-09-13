@@ -15,7 +15,6 @@ import org.bonn.se.hausarbeit.model.dao.UserDAO;
 import org.bonn.se.hausarbeit.model.dto.User;
 import org.bonn.se.hausarbeit.services.util.Roles;
 import org.bonn.se.hausarbeit.services.util.Views;
-import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
 
 import java.sql.SQLException;
 
@@ -37,7 +36,6 @@ public class RegistrationView extends VerticalLayout implements View {
     }
 
     public void setUpStep1() {
-
         auswahlPanel.setVisible(true);
 
         this.addComponent(auswahlPanel);
@@ -78,6 +76,7 @@ public class RegistrationView extends VerticalLayout implements View {
 
         buttonLayout.setDefaultComponentAlignment(Alignment.BOTTOM_CENTER);
 
+        role = "";
         studentButton.addClickListener(event -> {
             auswahlPanel.setVisible(false);
             role = Roles.CUSTOMER;
@@ -148,7 +147,7 @@ public class RegistrationView extends VerticalLayout implements View {
                 notification.setPosition(Position.BOTTOM_CENTER);
                 notification.setDelayMsec(4000);
                 notification.show(Page.getCurrent());
-                return;
+                //return;
             } else {
                 User tester = new User(emailField.getValue(), passwordField.getValue(), firstnameField.getValue(), lastnameField.getValue(), role);
                 try {

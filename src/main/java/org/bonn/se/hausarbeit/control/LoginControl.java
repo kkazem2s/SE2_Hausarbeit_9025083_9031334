@@ -1,6 +1,5 @@
 package org.bonn.se.hausarbeit.control;
 
-import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 import org.bonn.se.hausarbeit.gui.ui.MyUI;
 import org.bonn.se.hausarbeit.model.dto.User;
@@ -21,7 +20,6 @@ public class LoginControl {
         ResultSet set = null;
 
         try {
-            //DB-Zugriff
             Statement statement = JDBCConnection.getInstance().getStatement();
 
             set = statement.executeQuery("SELECT * "
@@ -55,15 +53,13 @@ public class LoginControl {
             JDBCConnection.getInstance().closeConnection();
         }
 
-        //VaadinSession session = UI.getCurrent().getSession();
-        //session.setAttribute(Roles.CURRENT_USER, user);
-
         ((MyUI) UI.getCurrent()).setUser(user);
+
         UI.getCurrent().getNavigator().navigateTo(Views.MAIN);
     }
 
     public static void logoutUser() {
         UI.getCurrent().close();
-        UI.getCurrent().getPage().setLocation("/login");
+        UI.getCurrent().getPage().setLocation("");
     }
 }

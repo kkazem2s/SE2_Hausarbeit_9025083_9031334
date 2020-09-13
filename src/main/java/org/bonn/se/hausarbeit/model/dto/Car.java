@@ -1,7 +1,5 @@
 package org.bonn.se.hausarbeit.model.dto;
 
-import java.io.Serializable;
-
 public class Car implements java.io.Serializable {
 
     private int carID;
@@ -13,14 +11,6 @@ public class Car implements java.io.Serializable {
 
     public Car(){}
 
-    public Car(int carID, int sellerID, String brand, String description, String model, int year) {
-        this.carID = carID;
-        this.sellerID = sellerID;
-        this.brand = brand;
-        this.description = description;
-        this.model = model;
-        this.year = year;
-    }
     public Car(int sellerID, String brand, String description, String model, int year) {
         this.sellerID = sellerID;
         this.brand = brand;
