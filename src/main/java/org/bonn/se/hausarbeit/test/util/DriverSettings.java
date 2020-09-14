@@ -1,4 +1,4 @@
-package util;
+package org.bonn.se.hausarbeit.test.util;
 
 public class DriverSettings {
     public static final String NAME = "webdriver.gecko.driver";

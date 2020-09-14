@@ -45,7 +45,7 @@ public class MainView extends VerticalLayout implements View {
 
         final Label labelText = new Label("Suche: ");
         Button buttonSuche = new Button("" , VaadinIcons.SEARCH);
-        Button buttonBuche = new Button("Buchen", VaadinIcons.BOOK);
+        Button buttonBuche = new Button("Reservieren", VaadinIcons.BOOK);
         final TextField textField = new TextField();
 
         horizontalLayout.addComponent(labelText);
