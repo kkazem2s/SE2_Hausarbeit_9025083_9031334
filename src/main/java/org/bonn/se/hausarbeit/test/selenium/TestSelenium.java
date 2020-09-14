@@ -4,7 +4,6 @@ import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-
 import org.bonn.se.hausarbeit.test.util.DriverSettings;
 
 import java.util.concurrent.TimeUnit;
@@ -16,8 +15,8 @@ public class TestSelenium {
 
     @BeforeAll
     public static void setUpClass() {
-        System.setProperty( "webdriver.firefox.bin" , "D:\\Firefox\\firefox.exe");
-        System.setProperty( DriverSettings.NAME , DriverSettings.PATH );
+        System.setProperty( DriverSettings.FIREFOXNAME , DriverSettings.FIREFOXPATH);
+        System.setProperty( DriverSettings.DRIVERNAME , DriverSettings.DRIVERPATH );
         driver = new FirefoxDriver();
     }
 
