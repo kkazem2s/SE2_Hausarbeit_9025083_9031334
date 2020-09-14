@@ -15,6 +15,8 @@ import org.bonn.se.hausarbeit.services.util.Views;
 
 public class LoginView extends VerticalLayout implements View {
 
+    public static boolean freshlydeleted = false;
+
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         User user = ((MyUI) UI.getCurrent()).getUser();
@@ -22,6 +24,10 @@ public class LoginView extends VerticalLayout implements View {
         if (user != null) {
             UI.getCurrent().getNavigator().navigateTo(Views.MAIN);
         } else {
+            if (freshlydeleted) {
+                Notification.show("Sie haben ihr Profil gelöscht!", Notification.Type.ERROR_MESSAGE);
+                freshlydeleted = false;
+            }
             setUp();
         }
     }
@@ -75,8 +81,12 @@ public class LoginView extends VerticalLayout implements View {
            String password = passwordField.getValue();
             try {
                 LoginControl.checkAuthentication(login,password);
-            } catch (NoSuchUserOrPassword | DatabaseException ex) {
+            } catch (NoSuchUserOrPassword ex) {
                 Notification.show("Fehler","E-Mail oder Passwort falsch", Notification.Type.ERROR_MESSAGE);
+                userLogin.setValue("");
+                passwordField.setValue("");
+            } catch (DatabaseException ex) {
+                Notification.show("Fehler","Keine sichere Verbindung zur Datenbank?", Notification.Type.ERROR_MESSAGE);
                 userLogin.setValue("");
                 passwordField.setValue("");
             }

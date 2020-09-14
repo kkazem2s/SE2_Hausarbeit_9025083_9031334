@@ -1,7 +1,9 @@
 package org.bonn.se.hausarbeit.control;
 
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import org.bonn.se.hausarbeit.gui.ui.MyUI;
+import org.bonn.se.hausarbeit.gui.views.LoginView;
 import org.bonn.se.hausarbeit.model.dto.User;
 import org.bonn.se.hausarbeit.control.exceptions.DatabaseException;
 import org.bonn.se.hausarbeit.control.exceptions.NoSuchUserOrPassword;
@@ -61,5 +63,10 @@ public class LoginControl {
     public static void logoutUser() {
         UI.getCurrent().close();
         UI.getCurrent().getPage().setLocation("");
+    }
+    public static void logoutUserAfterDelete() {
+        UI.getCurrent().close();
+        UI.getCurrent().getPage().setLocation("");
+        LoginView.freshlydeleted = true;
     }
 }

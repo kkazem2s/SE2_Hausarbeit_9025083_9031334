@@ -49,4 +49,22 @@ public class UserDAO extends AbstractDAO {
         }
         return false;
     }
+
+
+    public void delete(User u) throws DatabaseException, SQLException {
+        try {
+            AutoDAO autoDAO = AutoDAO.getInstance();
+
+            autoDAO.deleteAllBookingFromUser(u.getUserID());
+            autoDAO.deleteAllCar(u.getUserID());
+
+            JDBCConnection.getInstance().getStatement().executeUpdate("DELETE FROM carlookdb.user WHERE carlookdb.user.\"userID\" = \'" + u.getUserID() + "\'");
+        } catch (SQLException | DatabaseException ex) {
+            Logger.getLogger(LoginControl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DatabaseException("Fehler im SQL-Befehl! Bitte den Programmierer benachrichtigen!");
+        }
+    }
+
+
+
 }

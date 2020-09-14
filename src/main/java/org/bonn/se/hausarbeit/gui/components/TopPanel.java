@@ -7,6 +7,7 @@ import com.vaadin.ui.*;
 import org.bonn.se.hausarbeit.control.LoginControl;
 import org.bonn.se.hausarbeit.control.exceptions.DatabaseException;
 import org.bonn.se.hausarbeit.gui.windows.CreatedOffersWindow;
+import org.bonn.se.hausarbeit.gui.windows.DeleteProfileWindow;
 import org.bonn.se.hausarbeit.gui.windows.NewOfferWindow;
 import org.bonn.se.hausarbeit.gui.windows.ShowBookingWindow;
 import org.bonn.se.hausarbeit.model.dao.AutoDAO;
@@ -76,10 +77,17 @@ public class TopPanel extends HorizontalLayout {
             }
         }
 
+        Button buttonDeleteProfile = new Button("Profil löschen", VaadinIcons.TRASH);
+        buttonDeleteProfile.addClickListener(e -> {
+            UI.getCurrent().addWindow(new DeleteProfileWindow());
+        });
+
         Button buttonLogOut = new Button("Logout",VaadinIcons.LEVEL_DOWN_BOLD);
         buttonLogOut.addClickListener(e -> {
             LoginControl.logoutUser();
         });
+        this.addComponent(buttonDeleteProfile);
+        this.setComponentAlignment(buttonDeleteProfile, Alignment.MIDDLE_RIGHT);
         this.addComponent(buttonLogOut);
         this.setComponentAlignment(buttonLogOut, Alignment.MIDDLE_RIGHT);
     }

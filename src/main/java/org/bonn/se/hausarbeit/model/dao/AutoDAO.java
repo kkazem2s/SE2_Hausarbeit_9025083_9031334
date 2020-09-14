@@ -140,6 +140,23 @@ public class AutoDAO extends AbstractDAO {
         }
     }
 
+    public void deleteAllBookingFromUser(int id) throws SQLException, DatabaseException {
+        try {
+            JDBCConnection.getInstance().getStatement().executeUpdate("DELETE FROM carlookdb.reservation WHERE carlookdb.reservation.userid = \'" + id + "\'");
+        } catch (SQLException ex) {
+            Logger.getLogger(LoginControl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DatabaseException("Fehler im SQL-Befehl! Bitte den Programmierer benachrichtigen!");
+        }
+    }
+    public void deleteAllCar(int id) throws DatabaseException, SQLException {
+        try {
+            JDBCConnection.getInstance().getStatement().executeUpdate("DELETE FROM carlookdb.car WHERE carlookdb.car.userid = \'" + id + "\'");
+        } catch (SQLException | DatabaseException ex) {
+        Logger.getLogger(LoginControl.class.getName()).log(Level.SEVERE, null, ex);
+        throw new DatabaseException("Fehler im SQL-Befehl! Bitte den Programmierer benachrichtigen!");
+        }
+    }
+
     public void deleteBooking(int id) throws SQLException, DatabaseException {
         try {
             JDBCConnection.getInstance().getStatement().executeUpdate("DELETE FROM carlookdb.reservation WHERE carlookdb.reservation.carid = \'" + id + "\' AND  carlookdb.reservation.userid = \'" + ((MyUI) UI.getCurrent()).getUser().getUserID() + "\'");
