@@ -16,6 +16,7 @@ public class TestSelenium {
 
     @BeforeAll
     public static void setUpClass() {
+        System.setProperty( "webdriver.firefox.bin" , "D:\\Firefox\\firefox.exe");
         System.setProperty( DriverSettings.NAME , DriverSettings.PATH );
         driver = new FirefoxDriver();
     }
