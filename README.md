@@ -1,5 +1,5 @@
-SE2_Hausarbeit_9025083_9031334 TESTTEST123
-==============
+
+SE2_Hausarbeit_9025083_9031334
 
 Template for a simple Vaadin application that only requires a Servlet 3.0 container to run.
 
