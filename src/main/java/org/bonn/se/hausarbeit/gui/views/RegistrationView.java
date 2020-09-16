@@ -147,7 +147,6 @@ public class RegistrationView extends VerticalLayout implements View {
                 notification.setPosition(Position.BOTTOM_CENTER);
                 notification.setDelayMsec(4000);
                 notification.show(Page.getCurrent());
-                //return;
             } else {
                 User tester = new User(emailField.getValue(), passwordField.getValue(), firstnameField.getValue(), lastnameField.getValue(), role);
                 try {
@@ -155,9 +154,6 @@ public class RegistrationView extends VerticalLayout implements View {
                     if (!userDAO.doesEmailExist(emailField.getValue())) {
                         userDAO.create(tester);
                         setUpStep3();
-                        //Notification notification = new Notification("Registrierung Erfolgreich!",Notification.Type.TRAY_NOTIFICATION);
-                        //notification.setDelayMsec(4000);
-                        //UI.getCurrent().getNavigator().navigateTo(Views.LOGIN);
                     } else {
                         Notification notification = new Notification("Diese E-Mail-Adresse ist leider bereits registriert!" , Notification.Type.ERROR_MESSAGE);
                         notification.setPosition(Position.BOTTOM_CENTER);

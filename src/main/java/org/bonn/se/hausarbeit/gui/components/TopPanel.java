@@ -12,6 +12,7 @@ import org.bonn.se.hausarbeit.gui.windows.NewOfferWindow;
 import org.bonn.se.hausarbeit.gui.windows.ShowBookingWindow;
 import org.bonn.se.hausarbeit.model.dao.AutoDAO;
 import org.bonn.se.hausarbeit.model.dto.User;
+import org.bonn.se.hausarbeit.services.util.Roles;
 
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -63,11 +64,11 @@ public class TopPanel extends HorizontalLayout {
             UI.getCurrent().addWindow(new NewOfferWindow());
         });
 
-        if (user.getRole().equals("customer")) {
+        if (user.getRole().equals(Roles.CUSTOMER)) {
             this.addComponent(customer);
             this.setComponentAlignment(customer , Alignment.MIDDLE_RIGHT);
         } else {
-            if (user.getRole().equals("seller")) {
+            if (user.getRole().equals(Roles.SELLER)) {
                 this.addComponent(seller);
                 this.addComponent(seller2);
                 this.setComponentAlignment(seller , Alignment.MIDDLE_RIGHT);

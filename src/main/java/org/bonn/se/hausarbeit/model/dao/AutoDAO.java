@@ -48,7 +48,6 @@ public class AutoDAO extends AbstractDAO {
         Car car = null;
 
         try {
-            //System.out.println(rs.getString(1));
             while(rs.next()) { //Marke, Modell, Baujahr, Beschreibung
                 if (rs.getString(3).contains(str) || rs.getString(4).contains(str) || rs.getString(5).contains(str) || rs.getString(6).contains(str)) {
                     car = new Car();

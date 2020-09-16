@@ -1,13 +1,10 @@
 package org.bonn.se.hausarbeit.gui.windows;
 
-import com.vaadin.server.Page;
-import com.vaadin.shared.Position;
 import com.vaadin.ui.*;
 import org.bonn.se.hausarbeit.control.LoginControl;
 import org.bonn.se.hausarbeit.control.exceptions.DatabaseException;
 import org.bonn.se.hausarbeit.gui.ui.MyUI;
 import org.bonn.se.hausarbeit.model.dao.UserDAO;
-import org.bonn.se.hausarbeit.services.util.Views;
 
 import java.sql.SQLException;
 
@@ -31,7 +28,6 @@ public class DeleteProfileWindow extends Window {
 
         VerticalLayout verticalLayout = new VerticalLayout();
         Label label = new Label("Möchten Sie ihr Profil endgültig löschen? (Diese Aktion kann nicht Rückgängig gemacht werden!");
-        //label.setSizeFull();
         verticalLayout.addComponents(label,horizontalLayout);
         verticalLayout.setSizeFull();
         verticalLayout.setComponentAlignment(label, Alignment.MIDDLE_CENTER);
@@ -45,7 +41,6 @@ public class DeleteProfileWindow extends Window {
         });
         buttonNo.addClickListener(e -> {
             UI.getCurrent().removeWindow(this);
-            //UI.getCurrent().getNavigator().navigateTo(Views.MAIN);
         });
 
     }

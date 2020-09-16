@@ -74,7 +74,9 @@ public class LoginView extends VerticalLayout implements View {
         HorizontalLayout newh = new HorizontalLayout();
         newh.addComponents(buttonReg,buttonLogin);
         layout.addComponent(newh);
+        layout.setComponentAlignment(newh, Alignment.MIDDLE_CENTER);
         panel.setSizeUndefined();
+        panel.setWidth("350px");
 
         buttonLogin.addClickListener(e -> {
            String login = userLogin.getValue();

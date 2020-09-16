@@ -1,6 +1,5 @@
 package org.bonn.se.hausarbeit.control;
 
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import org.bonn.se.hausarbeit.gui.ui.MyUI;
 import org.bonn.se.hausarbeit.gui.views.LoginView;
