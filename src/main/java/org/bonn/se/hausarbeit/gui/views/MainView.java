@@ -66,31 +66,6 @@ public class MainView extends VerticalLayout implements View {
             this.selected = selection.getValue();
         });
 
-        /*
-        buttonSuche.addClickListener(event -> {
-            String marke = textField.getValue();
-            List<Car> list = AutoDAO.getInstance().getAuto(marke);
-            //List<Auto> list = AutoSearch.getInstance().getAutoByMarke(marke);
-
-            if (marke.equals("")) {
-                Notification.show(null, "Bitte Automarke eingeben!", Notification.Type.WARNING_MESSAGE);
-            }
-            anzahl += 1;
-
-            grid.removeAllColumns();
-            grid.setCaption("Treffer für '" + marke + "'\n(Anzahl der Suchen: " + anzahl + ")");
-
-            grid.setItems(list);
-
-            //grid.addColumn(Car::getCarID).setCaption("CarID");
-            grid.addColumn(Car::getBrand).setCaption("Marke");
-            grid.addColumn(Car::getModel).setCaption("Modell");
-            grid.addColumn(Car::getYear).setCaption("Baujahr");
-            grid.addColumn(Car::getDescription).setCaption("Beschreibung");
-
-        });
-         */
-
         textField.addValueChangeListener(event -> {
             if (!textField.getValue().equals("")) {
                 String marke = textField.getValue();

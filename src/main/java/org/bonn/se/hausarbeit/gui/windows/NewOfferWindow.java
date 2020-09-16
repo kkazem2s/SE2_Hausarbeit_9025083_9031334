@@ -16,7 +16,7 @@ public class NewOfferWindow extends Window {
     public NewOfferWindow() {
         super("Neue Anzeige erstellen:");
         center();
-        setWidth("400px");
+        setWidth("600px");
 
         VerticalLayout content = new VerticalLayout();
         content.setMargin(true);
@@ -36,8 +36,6 @@ public class NewOfferWindow extends Window {
         year.setSizeFull();
 
         Button finish = new Button("Anzeige erstellen", VaadinIcons.ARROW_CIRCLE_UP_O);
-
-
 
         finish.addClickListener(e -> {
             if (year.getValue().matches("-?\\d+")) {
