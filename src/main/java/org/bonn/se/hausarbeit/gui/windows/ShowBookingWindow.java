@@ -43,7 +43,7 @@ public class ShowBookingWindow extends Window {
 
         content.addComponent(grid);
 
-        Button delete = new Button("löschen");
+        Button delete = new Button("Löschen");
         content.addComponent(delete);
         content.setComponentAlignment(delete , Alignment.MIDDLE_CENTER);
 
