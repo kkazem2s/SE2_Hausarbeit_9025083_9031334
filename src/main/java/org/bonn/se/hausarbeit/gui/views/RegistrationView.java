@@ -1,6 +1,7 @@
 package org.bonn.se.hausarbeit.gui.views;
 
 import com.vaadin.data.Binder;
+import com.vaadin.data.ValidationException;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.icons.VaadinIcons;
@@ -121,8 +122,10 @@ public class RegistrationView extends VerticalLayout implements View {
         passwordCheckField.setSizeFull();
 
         TextField firstnameField = new TextField("Vorname");
+        binder.forField(firstnameField).asRequired("Bitte geben Sie Ihren Vornamen ein").bind(User::getFirstname,User::setFirstname);
         firstnameField.setSizeFull();
         TextField lastnameField = new TextField("Nachname");
+        binder.forField(lastnameField).asRequired("Bitte geben Sie Ihren Vornamen ein").bind(User::getLastname,User::setLastname);
         lastnameField.setSizeFull();
 
         HorizontalLayout buttonLayout = new HorizontalLayout();
@@ -142,32 +145,47 @@ public class RegistrationView extends VerticalLayout implements View {
         });
 
         weiterButton1.addClickListener(clickEvent -> {
-            if (!passwordField.getValue().equals(passwordCheckField.getValue())) {
-                Notification notification = new Notification("Die Passwörter stimmen nicht überein.", Notification.Type.ERROR_MESSAGE);
+            User user = new User();
+            boolean isValidEntry = true;
+
+            try {
+                binder.writeBean(user);
+                user.setRole(role);
+            } catch (ValidationException e) {
+                isValidEntry = false;
+            }
+
+            if (!isValidEntry) {
+                Notification notification = new Notification("Ihre Angaben sind nicht korrekt! Bitte überprüfen Sie diese erneut!" , Notification.Type.ERROR_MESSAGE);
                 notification.setPosition(Position.BOTTOM_CENTER);
-                notification.setDelayMsec(4000);
                 notification.show(Page.getCurrent());
             } else {
-                User tester = new User(emailField.getValue(), passwordField.getValue(), firstnameField.getValue(), lastnameField.getValue(), role);
-                try {
-                    UserDAO userDAO = new UserDAO();
-                    if (!userDAO.doesEmailExist(emailField.getValue())) {
-                        userDAO.create(tester);
-                        setUpStep3();
-                    } else {
-                        Notification notification = new Notification("Diese E-Mail-Adresse ist leider bereits registriert!" , Notification.Type.ERROR_MESSAGE);
-                        notification.setPosition(Position.BOTTOM_CENTER);
-                        notification.setDelayMsec(4000);
-                        notification.show(Page.getCurrent());
+                if (passwordField.getValue().equals(passwordCheckField.getValue())) {
+                    try {
+                        UserDAO userDAO = new UserDAO();
+                        if (!userDAO.doesEmailExist(emailField.getValue())) {
+                            userDAO.create(user);
+                            setUpStep3();
+                        } else {
+                            Notification notification = new Notification("Diese E-Mail-Adresse ist leider bereits registriert!" , Notification.Type.ERROR_MESSAGE);
+                            notification.setPosition(Position.BOTTOM_CENTER);
+                            notification.setDelayMsec(4000);
+                            notification.show(Page.getCurrent());
+                            return;
+                        }
+                    } catch (SQLException ex) {
+                        Notification.show("Fehler im SQL-Befehl, bitte Programmierer benachrichtigen", Notification.Type.ERROR_MESSAGE);
                         return;
+                    } catch (DatabaseException ex) {
+                        Notification.show("Fehler","Keine sichere Verbindung zur Datenbank?", Notification.Type.ERROR_MESSAGE);
                     }
-                } catch (SQLException ex) {
-                    Notification.show("SQL");
-                    return;
-                } catch (DatabaseException ex) {
-                    Notification.show("DATABASE");
+                    userCreationPanel.setVisible(false);
+                } else {
+                    Notification notification = new Notification("Die Passwörter stimmen nicht überein", Notification.Type.ERROR_MESSAGE);
+                    notification.setPosition(Position.BOTTOM_CENTER);
+                    notification.setDelayMsec(4000);
+                    notification.show(Page.getCurrent());
                 }
-                userCreationPanel.setVisible(false);
             }
         });
     }
